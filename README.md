@@ -83,6 +83,14 @@ while condition {
 names List<string> = ['Andrew', 'James'];
 ```
 
+## Tuples
+```cs
+numbers Tuple(int, int) = (1, 4);
+```
+
+## Error Handling
+
+
 ## Comments
 ```cs
 // this is a comment homie
