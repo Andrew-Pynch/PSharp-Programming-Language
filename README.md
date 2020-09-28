@@ -2,7 +2,7 @@
 P Sharp is my stab at creating a programming language that combines my favorite 
 elements from different languages. Key points include...
 
-## Compiled Language
+## Interpretted Language
 
 ## Strongly Typed
 
