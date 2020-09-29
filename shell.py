@@ -1,8 +1,8 @@
-import psharp
+from ipynb.fs.full.psharp import *
 
 while True:
     text = input('psharp > ')
-    result, error = psharp.run('<stdin>', text)
-
-    if error: print(error.as_string())
-    else: print(result)
+    psharp = PSharp(text)
+    result = psharp.run()
+    
+    print(result)
