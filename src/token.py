@@ -50,15 +50,12 @@ class Token:
     def __str__(self):
         return f'{self.val}:[{self.type}]'
 
+    def __repr__(self):
+        return f'{self.val}:[{self.type}]'
+
     def GetTokenType(self):
         try:
             return PSHARP_TOKENS[(self.val.lower())]
         except:
             return PSHARP_TOKENS['error']
 
-
-if __name__ == '__main__':
-    while True:
-        data = input('P# > ')
-        tok = Token(data)
-        print(tok)
