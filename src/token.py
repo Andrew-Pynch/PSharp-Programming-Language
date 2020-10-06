@@ -1,5 +1,11 @@
 PSHARP_TOKENS = {
-    # Maths
+# Imports
+    'import': 'IMPORT',
+    'as': 'ASIMPORT',
+# VARIABLES
+    '=': 'ASSIGNMENT',
+    'var': 'VARIABLE',
+# Maths
     '**': 'EXPONENT',
     '%': 'MODULUS',
     '//': 'INTDIVISION',
@@ -7,10 +13,10 @@ PSHARP_TOKENS = {
     '*': 'MULTIPLICATION',
     '-': 'SUBTRACTION',
     '+': 'ADDITION',
-    # Bools
+# Bools
     'true': 'TRUE',
     'false': 'FALSE',
-    # Logical Operands
+# Logical Operands
     '==': 'EQUAL',
     '!=': 'NOTEQUAL',
     '<': 'LESS',
@@ -26,19 +32,18 @@ PSHARP_TOKENS = {
     'bool': 'BOOL',
     'List<>': 'LIST<TYPE>',
     'Tuple(type, type)': 'TUPLE<TYPE, TYPE>',
-    # Functions
+# Functions
     'func': 'FUNCTION',
-    # Conditionals
+# Conditionals
     'if': 'IF',
     'elif': 'ELSEIF',
     'else': 'ELSE',
-    # Iteration
+# Iteration
     'for': 'ITERFOR',
     'while': 'ITERWHILE',
-    # COMMENTS
+# COMMENTS
     '#': 'COMMENT',
     'error': 'ERROR'
-    #
 }
 
 
@@ -55,7 +60,24 @@ class Token:
 
     def GetTokenType(self):
         try:
-            return PSHARP_TOKENS[(self.val.lower())]
+            val = self.val.lower()
+            if val in PSHARP_TOKENS:
+                return PSHARP_TOKENS[(val)]
+            else:
+                if val.isdigit():
+                    return PSHARP_TOKENS[('int')]
+                elif val.replace('.','',1).isdigit() and val.count('.') < 2:
+                    return PSHARP_TOKENS[('float')]
+                else:
+                    return self.CheckValidStringFormat(val)
         except:
+            print(f'{type(val)}{val}')
             return PSHARP_TOKENS['error']
-
+        
+    def CheckValidStringFormat(self, val):
+        first = val[0]
+        last = val[-1]
+        if first == "'" or first == '"' and last == "'" and last == '"':
+            return PSHARP_TOKENS[('string')]
+        else:
+            return PSHARP_TOKENS[('var')]
