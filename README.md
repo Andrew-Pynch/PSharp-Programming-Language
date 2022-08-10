@@ -1,18 +1,22 @@
 # P# Programming Language
-P Sharp is my stab at creating a programming language that combines my favorite 
+
+P Sharp is my stab at creating a programming language that combines my favorite
 elements from different languages. Key points include...
 
-## Interpretted Language
+## Compiled Language
 
 ## Strongly Typed
 
 # Syntax
+
 ## Imports
+
 ```python
 import packageName as name
 ```
 
 ## Math
+
 ```python
 ** = Exponent
 %  = Modulus
@@ -24,14 +28,16 @@ import packageName as name
 ```
 
 ## Boolean Operators
+
 ```cs
 true
 false
 ```
 
 ## Logic Operators
+
 ```python
-== = Equal to 
+== = Equal to
 != = Not equal to
 <  = Less than
 >  = Greater than
@@ -43,11 +49,13 @@ is not = return true if a is not b
 ```
 
 ## Declaring variables with types
+
 ```cs
 name string = 'andrew';
 ```
 
 ## Functions
+
 ```cs
 functionName returnType(parameter1 string) {
     print('Hello world!');
@@ -55,8 +63,9 @@ functionName returnType(parameter1 string) {
 ```
 
 ## Loops
+
 ```cs
-// For loops 
+// For loops
 for variable in condition {
     if (condition == true) {
         keep doing thing
@@ -78,33 +87,36 @@ while condition {
 ```
 
 ## Arrays
+
 ```cs
 // Declaring a new array!!!
 names List<string> = ['Andrew', 'James'];
 ```
 
 ## Tuples
+
 ```cs
 numbers Tuple(int, int) = (1, 4);
 ```
 
 ## Error Handling
 
-
 ## Comments
+
 ```cs
 // this is a comment homie
 ```
 
 ## Print
+
 ```python
 print('thing');
 ```
 
 # Casting variables
+
 ```cs
 age string = '100';
 // cast string age to an int
 int(age);
 ```
-
