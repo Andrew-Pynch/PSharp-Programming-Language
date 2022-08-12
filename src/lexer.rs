@@ -28,14 +28,15 @@ impl Lexer {
     pub fn generate_all_tokens(&mut self) {
         let mut tokens = Vec::new();
 
-        while self.next_token().token_type != TokenType::Eof {
+        loop {
             let tok: Token = self.next_token();
 
-            println!("{:?}", tok.literal.clone());
             if tok.token_type == TokenType::Eof {
                 break;
+            } else {
+                tokens.push(tok);
+                continue;
             }
-            tokens.push(tok);
         }
 
         self.tokens = tokens;
@@ -43,8 +44,6 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Token {
         let token: Token;
-
-        println!("BEGINNGING NEXT TOKEN: {}", self.ch);
 
         self.skip_whitespace();
 

@@ -12,10 +12,9 @@ pub fn start() {
     loop {
         print!("{}", PROMPT);
         io::stdout().flush().unwrap();
-        // let mut input = String::new();
-        // io::stdin().read_line(&mut input).unwrap();
-        let input: String = ";".to_string();
-        let input = input.trim();
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+
         if input.len() == 0 {
             continue;
         }
@@ -23,7 +22,7 @@ pub fn start() {
             break;
         }
 
-        let mut lexer: Lexer = Lexer::new(input);
+        let mut lexer: Lexer = Lexer::new(&input);
         lexer.generate_all_tokens();
 
         println!("Lexer Tokens: \n {:?}", lexer.tokens);
