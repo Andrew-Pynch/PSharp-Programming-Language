@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TokenType {
     Uninitialized,
 
@@ -100,10 +100,10 @@ impl Token {
     //     }
     // }
 
-    pub fn new(_token_type: TokenType, _literal: char) -> Token {
+    pub fn new(_token_type: TokenType, _literal: String) -> Token {
         return Token {
             token_type: _token_type,
-            literal: _literal.to_string(),
+            literal: _literal,
         };
     }
 

@@ -12,8 +12,9 @@ pub fn start() {
     loop {
         print!("{}", PROMPT);
         io::stdout().flush().unwrap();
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
+        // let mut input = String::new();
+        // io::stdin().read_line(&mut input).unwrap();
+        let input: String = ";".to_string();
         let input = input.trim();
         if input.len() == 0 {
             continue;

@@ -26,14 +26,15 @@ impl Lexer {
     }
 
     pub fn generate_all_tokens(&mut self) {
-        println!("Generating all tokens!\n\n");
-
         let mut tokens = Vec::new();
 
-        println!("Initialized tokens: {:?}", tokens);
+        while self.next_token().token_type != TokenType::Eof {
+            let tok: Token = self.next_token();
 
-        while self.ch != '\0' {
-            let tok = self.next_token();
+            println!("{:?}", tok.literal.clone());
+            if tok.token_type == TokenType::Eof {
+                break;
+            }
             tokens.push(tok);
         }
 
@@ -41,61 +42,75 @@ impl Lexer {
     }
 
     pub fn next_token(&mut self) -> Token {
-        println!("Next token!\n\n");
-
         let token: Token;
 
-        if self.ch == '=' {
-            token = Token::new(TokenType::Eq, self.ch);
-        } else if self.ch == '+' {
-            token = Token::new(TokenType::Plus, self.ch);
-        } else if self.ch == '-' {
-            token = Token::new(TokenType::Minus, self.ch);
-        } else if self.ch == '!' {
-            token = Token::new(TokenType::Bang, self.ch);
-        } else if self.ch == '*' {
-            token = Token::new(TokenType::Asterisk, self.ch);
-        } else if self.ch == '/' {
-            token = Token::new(TokenType::Slash, self.ch);
-        } else if self.ch == '<' {
-            token = Token::new(TokenType::Lt, self.ch);
-        } else if self.ch == '>' {
-            token = Token::new(TokenType::Gt, self.ch);
-        } else if self.ch == '=' {
-            token = Token::new(TokenType::Eq, self.ch);
-        } else if self.ch == '!' {
-            token = Token::new(TokenType::Bang, self.ch);
-        } else if self.ch == ',' {
-            token = Token::new(TokenType::Comma, self.ch);
-        } else if self.ch == ';' {
-            token = Token::new(TokenType::Semicolon, self.ch);
-        } else if self.ch == '(' {
-            token = Token::new(TokenType::Lparen, self.ch);
-        } else if self.ch == ')' {
-            token = Token::new(TokenType::Rparen, self.ch);
-        } else if self.ch == '{' {
-            token = Token::new(TokenType::Lbrace, self.ch);
-        } else if self.ch == '}' {
-            token = Token::new(TokenType::Rbrace, self.ch);
-        } else {
-            token = Token::new(TokenType::Uninitialized, self.ch);
-        }
+        println!("BEGINNGING NEXT TOKEN: {}", self.ch);
 
-        println!("Token: {:?}", token);
+        self.skip_whitespace();
+
+        if self.ch == '=' {
+            token = Token::new(TokenType::Eq, self.ch.to_string());
+        } else if self.ch == '+' {
+            token = Token::new(TokenType::Plus, self.ch.to_string());
+        } else if self.ch == '-' {
+            token = Token::new(TokenType::Minus, self.ch.to_string());
+        } else if self.ch == '!' {
+            token = Token::new(TokenType::Bang, self.ch.to_string());
+        } else if self.ch == '*' {
+            token = Token::new(TokenType::Asterisk, self.ch.to_string());
+        } else if self.ch == '/' {
+            token = Token::new(TokenType::Slash, self.ch.to_string());
+        } else if self.ch == '<' {
+            token = Token::new(TokenType::Lt, self.ch.to_string());
+        } else if self.ch == '>' {
+            token = Token::new(TokenType::Gt, self.ch.to_string());
+        } else if self.ch == '=' {
+            token = Token::new(TokenType::Eq, self.ch.to_string());
+        } else if self.ch == '!' {
+            token = Token::new(TokenType::Bang, self.ch.to_string());
+        } else if self.ch == ',' {
+            token = Token::new(TokenType::Comma, self.ch.to_string());
+        } else if self.ch == ';' {
+            token = Token::new(TokenType::Semicolon, self.ch.to_string());
+        } else if self.ch == '(' {
+            token = Token::new(TokenType::Lparen, self.ch.to_string());
+        } else if self.ch == ')' {
+            token = Token::new(TokenType::Rparen, self.ch.to_string());
+        } else if self.ch == '{' {
+            token = Token::new(TokenType::Lbrace, self.ch.to_string());
+        } else if self.ch == '}' {
+            token = Token::new(TokenType::Rbrace, self.ch.to_string());
+        } else if self.ch == '\0' {
+            token = Token::new(TokenType::Eof, self.ch.to_string());
+        } else {
+            if self.ch.is_alphabetic() {
+                let literal: String = self.read_identifier();
+                token = Token::new(TokenType::Ident, literal);
+            } else if self.ch.is_numeric() {
+                let literal: String = self.read_number();
+                token = Token::new(TokenType::Int, literal);
+            } else {
+                token = Token::new(TokenType::Illegal, self.ch.to_string());
+            }
+        }
 
         self.read_char();
 
         return token;
     }
 
-    // pub fn skip_whitespace(&self) {
-    //     for self.ch == ' ' || self.ch == '\t' || self.ch == '\n' || self.ch == '\r' {
-    //         self.read_char();
-    //     }
-    // }
+    pub fn skip_whitespace(&mut self) {
+        while self.ch.is_whitespace() {
+            self.read_char();
+        }
+    }
+
+    pub fn is_whitespace(&mut self, ch: char) -> bool {
+        return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+    }
 
     pub fn read_char(&mut self) {
-        if self.position > self.input.chars().count() {
+        if self.position >= self.input.chars().count() {
             self.ch = '\0';
         } else {
             self.ch = self.input.as_bytes()[self.position] as char;
@@ -119,7 +134,7 @@ impl Lexer {
         }
 
         // return all chars between position and self.position as a string
-        return self.input[position..self.position].to_string();
+        return self.input[position..self.position - 1].to_string();
     }
 
     pub fn read_number(&mut self) -> String {
@@ -127,6 +142,6 @@ impl Lexer {
         while self.ch.is_digit(10) {
             self.read_char();
         }
-        return self.input[position..self.position].to_string();
+        return self.input[position..self.position - 1].to_string();
     }
 }
