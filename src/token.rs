@@ -100,7 +100,7 @@ impl Token {
     }
 }
 
-pub fn LookupIdentifier(identifier: &str) -> TokenType {
+pub fn lookup_identifier(identifier: &str) -> TokenType {
     let token_type = TokenType::from_str(identifier).unwrap();
     return token_type;
 }

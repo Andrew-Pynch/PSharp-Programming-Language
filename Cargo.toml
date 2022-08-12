@@ -1,5 +1,5 @@
 [package]
-name = "PSharp-Programming-Language"
+name = "psharp_programming_language"
 version = "0.1.0"
 edition = "2021"
 
