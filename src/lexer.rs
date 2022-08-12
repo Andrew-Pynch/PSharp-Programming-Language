@@ -1,49 +1,45 @@
-use crate::file_utils;
-use crate::position::Position;
 use crate::token::{Token, TokenType};
 
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Lexer {
-    pub file_name: String,
-    pub file_contents: String,
-    pub position: Position,
-    pub current_char: char,
+    pub input: String,
+    pub position: i32,      // current posistion in input (points to curr char)
+    pub read_position: i32, // current reading position in input (after current char)
+    pub ch: char,           // current char under examination
 }
 
-pub fn lex_file() {
-    let file_to_parse: String = "./src/psharp_programs/HelloWorld.pspl".to_string();
-    let contents: String = file_utils::parse_pspl_file(file_to_parse.clone());
+impl Lexer {
+    pub fn new(_input: &str) -> Lexer {
+        let mut l = Lexer {
+            input: _input.to_string(),
+            position: 0,
+            read_position: 0,
+            ch: _input.as_bytes()[0] as char,
+        };
 
-    // instantiate a new lexer struct
-    let mut lexer: Lexer = Lexer {
-        file_name: file_to_parse.clone(),
-        file_contents: contents.clone(),
-        position: Position {
-            idx: 0,
-            line: 1,
-            col: 1,
-            file_name: file_to_parse.clone(),
-            file_contents: contents.clone(),
-        },
-        current_char: contents.clone().as_bytes()[0] as char,
-    };
+        // TODO: Implement this
+        // l.read_char()
 
-    println!("Current char {}", lexer.current_char);
+        return l;
+    }
 
-    let tokens = get_tokens(lexer);
-}
+    pub fn next_token(&mut self) -> Token {
+        let token = Token::new();
 
-pub fn get_tokens(lexer: Lexer) {
-    let mut tokens: Vec<Token> = Vec::new();
+        // TODO: implement this
+        // self.skip_whitespace();
 
-    tokens.push(get_next_token(lexer));
+        // checking for double character tokens such as ==, !=, <=, <> etc...
+        if (self.peekChar() == "=") {
+            let placeholder_ch = self.ch;
+            self.read_char();
+            let literal = placeholder_ch.to_string() + self.ch.to_string();
+            let token: Token = Token {
+                token_type: TokenType::Eq,
+                literal: literal,
+            };
+        }
 
-    println!("Tokens {:?}", tokens);
-}
-
-pub fn get_next_token(lexer: Lexer) -> Token {
-    let mut token: Token = Token {
-        token_type: TokenType::TtInt,
-        token_value: "".to_string(),
-    };
-    return token;
+        return token;
+    }
 }

@@ -1,4 +1,3 @@
-use std::env;
 use std::fs;
 
 pub fn parse_pspl_file(file_to_parse: String) -> String {

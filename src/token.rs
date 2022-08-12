@@ -1,72 +1,106 @@
-#[derive(Debug, Clone, PartialEq)]
+use std::str::FromStr;
+
+#[derive(Debug, PartialEq)]
 pub enum TokenType {
-    TtInt,
-    TtFloat,
-    TtString,
-    TtIdentifier,
-    TtKeyword,
-    TtPlus,
-    TtMinus,
-    TtMul,
-    TtDiv,
-    TtPow,
-    TtEq,
-    TtLparen,
-    TtParenN,
-    TtLsquare,
-    TtRsquare,
-    TtEe,
-    TtNe,
-    TtLt,
-    TtGt,
-    TtLte,
-    TtGte,
-    TtComma,
-    TtSemicolon,
-    TtArrow,
-    TtNewline,
-    TtEof,
+    Uninitialized,
+
+    Illegal,
+    Eof,
+    // Identifiers + literals
+    Ident,
+    Int,
+    // Operators
+    Assign,
+    Plus,
+    Minus,
+    Bang,
+    Asterisk,
+    Slash,
+    // Value comparison
+    Lt,
+    Gt,
+    Eq,
+    NotEq,
+    // Delimiters
+    Comma,
+    Semicolon,
+    Lparen,
+    Rparen,
+    Lbrace,
+    Rbrace,
+    // Keywords
+    Function,
+    Let,
+    Const,
+    True,
+    False,
+    If,
+    Else,
+    Return,
 }
+#[derive(Debug, PartialEq)]
+pub struct NotAToken; // TODO: Improve this
 
-static KEYWORDS: [&str; 11] = [
-    "if", "else", "elif", "while", "and", "or", "not", "func", "return", "continue", "break",
-];
+impl FromStr for TokenType {
+    type Err = NotAToken;
 
-impl TokenType {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            TokenType::TtInt => "TtInt",
-            TokenType::TtFloat => "TtFloat",
-            TokenType::TtString => "TtString",
-            TokenType::TtIdentifier => "TtIdentifier",
-            TokenType::TtKeyword => "TtKeyword",
-            TokenType::TtPlus => "TtPlus",
-            TokenType::TtMinus => "TtMinus",
-            TokenType::TtMul => "TtMul",
-            TokenType::TtDiv => "TtDiv",
-            TokenType::TtPow => "TtPow",
-            TokenType::TtEq => "TtEq",
-            TokenType::TtLparen => "TtLparen",
-            TokenType::TtParenN => "TtParenN",
-            TokenType::TtLsquare => "TtLsquare",
-            TokenType::TtRsquare => "TtRsquare",
-            TokenType::TtEe => "TtEe",
-            TokenType::TtNe => "TtNe",
-            TokenType::TtLt => "TtLt",
-            TokenType::TtGt => "TtGt",
-            TokenType::TtLte => "TtLte",
-            TokenType::TtGte => "TtGte",
-            TokenType::TtComma => "TtComma",
-            TokenType::TtSemicolon => "TtSemicolon",
-            TokenType::TtArrow => "TtArrow",
-            TokenType::TtNewline => "TtNewline",
-            TokenType::TtEof => "TtEof",
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "UNINITIALIZED" => Ok(TokenType::Illegal),
+
+            "ILLEGAL" => Ok(TokenType::Illegal),
+            "EOF" => Ok(TokenType::Eof),
+            // Identifiers + literals
+            "IDENT" => Ok(TokenType::Ident),
+            "INT" => Ok(TokenType::Int),
+            // Operators
+            "=" => Ok(TokenType::Assign),
+            "+" => Ok(TokenType::Plus),
+            "-" => Ok(TokenType::Minus),
+            "!" => Ok(TokenType::Bang),
+            "*" => Ok(TokenType::Asterisk),
+            "/" => Ok(TokenType::Slash),
+            // Value comparison
+            "<" => Ok(TokenType::Lt),
+            ">" => Ok(TokenType::Gt),
+            "==" => Ok(TokenType::Eq),
+            "!=" => Ok(TokenType::NotEq),
+            // Delimiters
+            "," => Ok(TokenType::Comma),
+            ";" => Ok(TokenType::Semicolon),
+            "(" => Ok(TokenType::Lparen),
+            ")" => Ok(TokenType::Rparen),
+            "{" => Ok(TokenType::Lbrace),
+            "}" => Ok(TokenType::Rbrace),
+            // Keywords
+            "FUNCTION" => Ok(TokenType::Function),
+            "LET" => Ok(TokenType::Let),
+            "CONST" => Ok(TokenType::Const),
+            "TRUE" => Ok(TokenType::True),
+            "FALSE" => Ok(TokenType::False),
+            "IF" => Ok(TokenType::If),
+            "ELSE" => Ok(TokenType::Else),
+            "RETURN" => Ok(TokenType::Return),
+            _ => Err(NotAToken),
         }
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
 pub struct Token {
     pub token_type: TokenType,
-    pub token_value: String,
+    pub literal: String,
+}
+
+impl Token {
+    pub fn new() -> Token {
+        Token {
+            token_type: TokenType::Uninitialized,
+            literal: String::new(),
+        }
+    }
+}
+
+pub fn LookupIdentifier(identifier: &str) -> TokenType {
+    let token_type = TokenType::from_str(identifier).unwrap();
+    return token_type;
 }
