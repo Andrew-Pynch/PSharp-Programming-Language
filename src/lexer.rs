@@ -6,6 +6,7 @@ pub struct Lexer {
     pub position: usize,      // current posistion in input (points to curr char)
     pub read_position: usize, // current reading position in input (after current char)
     pub ch: char,             // current char under examination
+    pub tokens: Vec<Token>,
 }
 
 impl Lexer {
@@ -15,6 +16,7 @@ impl Lexer {
             position: 0,
             read_position: 0,
             ch: _input.as_bytes()[0] as char,
+            tokens: Vec::new(),
         };
 
         // TODO: Implement this
@@ -23,22 +25,65 @@ impl Lexer {
         return l;
     }
 
-    pub fn next_token(&mut self) -> Token {
-        let mut token = Token::new();
+    pub fn generate_all_tokens(&mut self) {
+        println!("Generating all tokens!\n\n");
 
-        // TODO: implement this
-        // self.skip_whitespace();
+        let mut tokens = Vec::new();
 
-        // checking for double character tokens such as ==, !=, <=, <> etc...
-        if self.peek_char() == '=' {
-            let placeholder_ch = self.ch;
-            self.read_char();
-            let literal = placeholder_ch.to_string() + &self.ch.to_string();
-            token = Token {
-                token_type: TokenType::Eq,
-                literal: literal,
-            };
+        println!("Initialized tokens: {:?}", tokens);
+
+        while self.ch != '\0' {
+            let tok = self.next_token();
+            tokens.push(tok);
         }
+
+        self.tokens = tokens;
+    }
+
+    pub fn next_token(&mut self) -> Token {
+        println!("Next token!\n\n");
+
+        let token: Token;
+
+        if self.ch == '=' {
+            token = Token::new(TokenType::Eq, self.ch);
+        } else if self.ch == '+' {
+            token = Token::new(TokenType::Plus, self.ch);
+        } else if self.ch == '-' {
+            token = Token::new(TokenType::Minus, self.ch);
+        } else if self.ch == '!' {
+            token = Token::new(TokenType::Bang, self.ch);
+        } else if self.ch == '*' {
+            token = Token::new(TokenType::Asterisk, self.ch);
+        } else if self.ch == '/' {
+            token = Token::new(TokenType::Slash, self.ch);
+        } else if self.ch == '<' {
+            token = Token::new(TokenType::Lt, self.ch);
+        } else if self.ch == '>' {
+            token = Token::new(TokenType::Gt, self.ch);
+        } else if self.ch == '=' {
+            token = Token::new(TokenType::Eq, self.ch);
+        } else if self.ch == '!' {
+            token = Token::new(TokenType::Bang, self.ch);
+        } else if self.ch == ',' {
+            token = Token::new(TokenType::Comma, self.ch);
+        } else if self.ch == ';' {
+            token = Token::new(TokenType::Semicolon, self.ch);
+        } else if self.ch == '(' {
+            token = Token::new(TokenType::Lparen, self.ch);
+        } else if self.ch == ')' {
+            token = Token::new(TokenType::Rparen, self.ch);
+        } else if self.ch == '{' {
+            token = Token::new(TokenType::Lbrace, self.ch);
+        } else if self.ch == '}' {
+            token = Token::new(TokenType::Rbrace, self.ch);
+        } else {
+            token = Token::new(TokenType::Uninitialized, self.ch);
+        }
+
+        println!("Token: {:?}", token);
+
+        self.read_char();
 
         return token;
     }

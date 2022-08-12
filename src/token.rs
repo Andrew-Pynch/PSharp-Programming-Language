@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum TokenType {
     Uninitialized,
 
@@ -86,18 +86,28 @@ impl FromStr for TokenType {
     }
 }
 
+#[derive(Debug, PartialEq, Clone, Eq)]
 pub struct Token {
     pub token_type: TokenType,
     pub literal: String,
 }
 
 impl Token {
-    pub fn new() -> Token {
-        Token {
-            token_type: TokenType::Uninitialized,
-            literal: String::new(),
-        }
+    // pub fn new() -> Token {
+    //     Token {
+    //         token_type: TokenType::Uninitialized,
+    //         literal: String::new(),
+    //     }
+    // }
+
+    pub fn new(_token_type: TokenType, _literal: char) -> Token {
+        return Token {
+            token_type: _token_type,
+            literal: _literal.to_string(),
+        };
     }
+
+    // pub fn set(_token_type: TokenType, _literal: char) ->
 }
 
 pub fn lookup_identifier(identifier: &str) -> TokenType {
