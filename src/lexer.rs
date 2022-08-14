@@ -26,20 +26,23 @@ impl Lexer {
     }
 
     pub fn generate_all_tokens(&mut self) {
-        let mut tokens = Vec::new();
+        let mut _tokens = Vec::new();
 
         loop {
+            if self.tokens.len() >= self.input.chars().count() {
+                break;
+            }
+
             let tok: Token = self.next_token();
 
             if tok.token_type == TokenType::Eof {
                 break;
             } else {
-                tokens.push(tok);
+                _tokens.push(tok);
+                self.tokens = _tokens.clone();
                 continue;
             }
         }
-
-        self.tokens = tokens;
     }
 
     pub fn next_token(&mut self) -> Token {
@@ -110,6 +113,7 @@ impl Lexer {
 
     pub fn read_char(&mut self) {
         if self.position >= self.input.chars().count() {
+            dbg!("SHOULD STOP HERE", &self);
             self.ch = '\0';
         } else {
             self.ch = self.input.as_bytes()[self.position] as char;

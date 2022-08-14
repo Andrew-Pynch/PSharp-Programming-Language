@@ -110,6 +110,12 @@ impl Token {
     // pub fn set(_token_type: TokenType, _literal: char) ->
 }
 
+impl std::fmt::Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "\nToken({:?}, {}\n)", self.token_type, self.literal)
+    }
+}
+
 pub fn lookup_identifier(identifier: &str) -> TokenType {
     let token_type = TokenType::from_str(identifier).unwrap();
     return token_type;

@@ -8,8 +8,15 @@ pub fn start() {
     println!("Welcome the P# programming language!");
     println!("Type exit to exit. \n\n");
 
+    let mut counter: usize = 0;
+
     // print the prompt then read from the standard input
-    loop {
+    'outer_counter: loop {
+        if counter == 1 {
+            break 'outer_counter;
+        }
+        counter += 1;
+
         print!("{}", PROMPT);
         io::stdout().flush().unwrap();
         let mut input = String::new();
