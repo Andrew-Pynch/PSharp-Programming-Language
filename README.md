@@ -1,5 +1,7 @@
 # P# Programming Language
 
+[![Rust Build & Test](https://github.com/Andrew-Pynch/PSharp-Programming-Language/actions/workflows/rust.yml/badge.svg)](https://github.com/Andrew-Pynch/PSharp-Programming-Language/actions/workflows/rust.yml)
+
 P Sharp is my stab at creating a programming language that combines my favorite
 elements from different languages. Key points include...
 
