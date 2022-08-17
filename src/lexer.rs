@@ -46,19 +46,55 @@ impl Lexer {
     }
 
     pub fn current_char_is_value_comparator(&mut self) -> bool {
-        return self.ch == '=' || self.ch == '!' || self.ch == '<' || self.ch == '>';
+        let result: bool = self.ch == '=' || self.ch == '!' || self.ch == '<' || self.ch == '>';
+
+        return result;
     }
 
     pub fn get_value_comparison_token(&mut self) -> Token {
-        let token: Token = Token::new(TokenType::Uninitialized, String::new());
+        let mut token: Token = Token::new(TokenType::Uninitialized, String::new());
+
+        if self.position + 1 <= self.input.len() - 1 {
+            let next_char = self.input.as_bytes()[self.position + 1] as char;
+            if self.ch == '=' && next_char == '=' {
+                token = Token::new(TokenType::Eq, "==".to_string());
+            } else if self.ch == '!' && next_char == '=' {
+                token = Token::new(TokenType::Neq, "!=".to_string());
+            } else if self.ch == '<' && next_char == '=' {
+                token = Token::new(TokenType::Lte, "<=".to_string());
+            } else if self.ch == '>' && next_char == '=' {
+                token = Token::new(TokenType::Gte, ">=".to_string());
+            }
+        }
+        // THIS IS SUPER BAD
+        else {
+            if self.ch == '=' {
+                token = Token::new(TokenType::Eq, "=".to_string());
+            } else if self.ch == '!' {
+                token = Token::new(TokenType::Bang, "!".to_string());
+            } else if self.ch == '<' {
+                token = Token::new(TokenType::Lt, "<".to_string());
+            } else if self.ch == '>' {
+                token = Token::new(TokenType::Gt, ">".to_string());
+            }
+        }
+
         return token;
     }
 
     pub fn get_token_at_current_block(&mut self) -> Token {
         let mut token: Token = Token::new(TokenType::Uninitialized, "".to_string());
 
+        self.skip_whitespace();
+
+        // Value comparison >=, >, <=, <, ==, !=
+        if self.current_char_is_value_comparator() {
+            // COLLAPSE THIS INTO ONE FUNCTION THAT GETS OPERANDS AND VALUE COMPARISON
+            token = self.get_value_comparison_token();
+        }
         // Operators
-        if self.ch == '=' {
+        // SHOULD PULL OUT OF HERE
+        else if self.ch == '=' {
             token = Token::new(TokenType::Eq, self.ch.to_string());
         } else if self.ch == '+' {
             token = Token::new(TokenType::Plus, self.ch.to_string());
@@ -70,10 +106,6 @@ impl Lexer {
             token = Token::new(TokenType::Asterisk, self.ch.to_string());
         } else if self.ch == '/' {
             token = Token::new(TokenType::Slash, self.ch.to_string());
-        }
-        // Value comparison >=, >, <=, <, ==, !=
-        else if self.current_char_is_value_comparator() {
-            token = self.get_value_comparison_token();
         }
         // Delimiters
         else if self.ch == ',' {
@@ -96,6 +128,7 @@ impl Lexer {
             token = Token::new(TokenType::Eof, self.ch.to_string());
             self.is_at_end = true;
         } else {
+            dbg!("Unrecognized token: {}", self.ch);
             // this line might be a problem
             token = Token::new(TokenType::Illegal, self.ch.to_string());
         }
@@ -161,15 +194,15 @@ impl Lexer {
     //     return token;
     // }
 
-    // pub fn skip_whitespace(&mut self) {
-    //     while self.ch.is_whitespace() {
-    //         self.read_char();
-    //     }
-    // }
+    pub fn skip_whitespace(&mut self) {
+        while self.ch.is_whitespace() {
+            self.increment_position();
+        }
+    }
 
-    // pub fn is_whitespace(&mut self, ch: char) -> bool {
-    //     return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
-    // }
+    pub fn is_whitespace(&mut self, ch: char) -> bool {
+        return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+    }
 
     // pub fn read_char(&mut self) {
     //     if self.position >= self.input.chars().count() {

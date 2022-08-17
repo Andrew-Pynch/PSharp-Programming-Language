@@ -21,7 +21,7 @@ pub fn start() {
         // io::stdout().flush().unwrap();
         // let mut input = String::new();
         // io::stdin().read_line(&mut input).unwrap();
-        let mut input: String = "{=+ hello\0".to_string();
+        let input: String = "==".to_string();
 
         if input.len() == 0 {
             continue;

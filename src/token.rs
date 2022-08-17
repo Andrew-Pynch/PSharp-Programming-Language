@@ -18,9 +18,11 @@ pub enum TokenType {
     Slash,
     // Value comparison
     Lt,
+    Lte,
     Gt,
+    Gte,
     Eq,
-    NotEq,
+    Neq,
     // Delimiters
     Comma,
     Semicolon,
@@ -62,9 +64,11 @@ impl FromStr for TokenType {
             "/" => Ok(TokenType::Slash),
             // Value comparison
             "<" => Ok(TokenType::Lt),
+            "<=" => Ok(TokenType::Lte),
             ">" => Ok(TokenType::Gt),
+            ">=" => Ok(TokenType::Gte),
             "==" => Ok(TokenType::Eq),
-            "!=" => Ok(TokenType::NotEq),
+            "!=" => Ok(TokenType::Neq),
             // Delimiters
             "," => Ok(TokenType::Comma),
             ";" => Ok(TokenType::Semicolon),
