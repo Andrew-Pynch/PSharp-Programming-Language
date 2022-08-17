@@ -25,7 +25,7 @@ impl Lexer {
         return l;
     }
 
-    pub fn increment_position(&mut self) {
+    pub fn increment_position_set_char(&mut self) {
         if self.position >= self.input.len() - 1 {
             self.ch = '\0';
         } else {
@@ -65,6 +65,8 @@ impl Lexer {
             } else if self.ch == '>' && next_char == '=' {
                 token = Token::new(TokenType::Gte, ">=".to_string());
             }
+
+            self.increment_position_set_char()
         }
         // THIS IS SUPER BAD
         else {
@@ -133,7 +135,7 @@ impl Lexer {
             token = Token::new(TokenType::Illegal, self.ch.to_string());
         }
 
-        self.increment_position();
+        self.increment_position_set_char();
 
         return token;
     }
@@ -196,7 +198,7 @@ impl Lexer {
 
     pub fn skip_whitespace(&mut self) {
         while self.ch.is_whitespace() {
-            self.increment_position();
+            self.increment_position_set_char();
         }
     }
 
