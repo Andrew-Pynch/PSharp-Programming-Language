@@ -18,10 +18,9 @@ pub fn start() {
         counter += 1;
 
         print!("{}", PROMPT);
-        // io::stdout().flush().unwrap();
-        // let mut input = String::new();
-        // io::stdin().read_line(&mut input).unwrap();
-        let input: String = "==".to_string();
+        io::stdout().flush().unwrap();
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
 
         if input.len() == 0 {
             continue;

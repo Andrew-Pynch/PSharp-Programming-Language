@@ -7,7 +7,7 @@ use psharp_programming_language::{
 // line two";
 fn get_test_input() -> &'static str {
     // let test_input: &str = "1{; -\0";
-    let test_input: &str = "==";
+    let test_input: &str = "1 0 == ! = {} { <;";
     return test_input;
 }
 
@@ -40,13 +40,56 @@ fn test_generate_all_tokens() {
 
     let test_tokens: Vec<Token> = vec![
         Token {
+            token_type: TokenType::Int,
+            literal: "1".to_string(),
+        },
+        Token {
+            token_type: TokenType::Int,
+            literal: "0".to_string(),
+        },
+        Token {
             token_type: TokenType::Eq,
             literal: "==".to_string(),
+        },
+        Token {
+            token_type: TokenType::Bang,
+            literal: "!".to_string(),
+        },
+        Token {
+            token_type: TokenType::Assign,
+            literal: "=".to_string(),
+        },
+        Token {
+            token_type: TokenType::Lbrace,
+            literal: "{".to_string(),
+        },
+        Token {
+            token_type: TokenType::Rbrace,
+            literal: "}".to_string(),
+        },
+        Token {
+            token_type: TokenType::Lbrace,
+            literal: "{".to_string(),
+        },
+        Token {
+            token_type: TokenType::Lt,
+            literal: "<".to_string(),
+        },
+        Token {
+            token_type: TokenType::Semicolon,
+            literal: ";".to_string(),
         },
         Token {
             token_type: TokenType::Eof,
             literal: "\0".to_string(),
         },
     ];
+    assert_eq!(lexer.tokens.len(), test_tokens.len());
+
+    for (i, token) in lexer.tokens.iter().enumerate() {
+        dbg!(token, test_tokens[i].clone());
+        assert_eq!(token, &test_tokens[i]);
+    }
+
     assert_eq!(lexer.tokens, test_tokens);
 }

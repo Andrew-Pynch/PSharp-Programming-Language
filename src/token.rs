@@ -5,10 +5,13 @@ pub enum TokenType {
     Uninitialized,
 
     Illegal,
-    Eof,
+    Eof, // '\0'
     // Identifiers + literals
     Ident,
     Int,
+    // ============
+    // solo samuel's
+    // ============
     // Operators
     Assign,
     Plus,
@@ -18,8 +21,17 @@ pub enum TokenType {
     Slash,
     // Value comparison
     Lt,
-    Lte,
     Gt,
+    // ==============
+    // double dussy's
+    // ==============
+    // Operators
+    PlusAssign,
+    MinusAssign,
+    AsteriskAssign,
+    SlashAssign,
+    // Value comparison
+    Lte,
     Gte,
     Eq,
     Neq,
@@ -62,6 +74,10 @@ impl FromStr for TokenType {
             "!" => Ok(TokenType::Bang),
             "*" => Ok(TokenType::Asterisk),
             "/" => Ok(TokenType::Slash),
+            "+=" => Ok(TokenType::PlusAssign),
+            "-=" => Ok(TokenType::MinusAssign),
+            "*=" => Ok(TokenType::AsteriskAssign),
+            "/=" => Ok(TokenType::SlashAssign),
             // Value comparison
             "<" => Ok(TokenType::Lt),
             "<=" => Ok(TokenType::Lte),
@@ -97,21 +113,12 @@ pub struct Token {
 }
 
 impl Token {
-    // pub fn new() -> Token {
-    //     Token {
-    //         token_type: TokenType::Uninitialized,
-    //         literal: String::new(),
-    //     }
-    // }
-
     pub fn new(_token_type: TokenType, _literal: String) -> Token {
         return Token {
             token_type: _token_type,
             literal: _literal,
         };
     }
-
-    // pub fn set(_token_type: TokenType, _literal: char) ->
 }
 
 impl std::fmt::Display for Token {
