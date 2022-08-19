@@ -17,19 +17,16 @@ fn get_test_input() -> &'static str {
         let result = add(five, ten);
         
         !-/*5;
+        
+        if (5 < 10) {
+            return true;
+        } else {
+            return false;
+        }
+        
+        10 == 10;
+        10 != 9;
     ";
-
-    // let result = add(five, ten);
-    // !-/*5;
-
-    // if (5 < 10) {
-    //     return true;
-    // } else {
-    //     return false;
-    // }
-
-    // 10 == 10;
-    // 10 != 9;
     return test_input;
 }
 
@@ -217,6 +214,106 @@ fn test_generate_all_tokens() {
         Token {
             token_type: TokenType::Int,
             literal: "5".to_string(),
+        },
+        Token {
+            token_type: TokenType::Semicolon,
+            literal: ";".to_string(),
+        },
+        Token {
+            token_type: TokenType::If,
+            literal: "if".to_string(),
+        },
+        Token {
+            token_type: TokenType::LParen,
+            literal: "(".to_string(),
+        },
+        Token {
+            token_type: TokenType::Int,
+            literal: "5".to_string(),
+        },
+        Token {
+            token_type: TokenType::Lt,
+            literal: "<".to_string(),
+        },
+        Token {
+            token_type: TokenType::Int,
+            literal: "10".to_string(),
+        },
+        Token {
+            token_type: TokenType::RParen,
+            literal: ")".to_string(),
+        },
+        Token {
+            token_type: TokenType::LBrace,
+            literal: "{".to_string(),
+        },
+        Token {
+            token_type: TokenType::Return,
+            literal: "return".to_string(),
+        },
+        Token {
+            token_type: TokenType::True,
+            literal: "true".to_string(),
+        },
+        Token {
+            token_type: TokenType::Semicolon,
+            literal: ";".to_string(),
+        },
+        Token {
+            token_type: TokenType::RBrace,
+            literal: "}".to_string(),
+        },
+        Token {
+            token_type: TokenType::Else,
+            literal: "else".to_string(),
+        },
+        Token {
+            token_type: TokenType::LBrace,
+            literal: "{".to_string(),
+        },
+        Token {
+            token_type: TokenType::Return,
+            literal: "return".to_string(),
+        },
+        Token {
+            token_type: TokenType::False,
+            literal: "false".to_string(),
+        },
+        Token {
+            token_type: TokenType::Semicolon,
+            literal: ";".to_string(),
+        },
+        Token {
+            token_type: TokenType::RBrace,
+            literal: "}".to_string(),
+        },
+        Token {
+            token_type: TokenType::Int,
+            literal: "10".to_string(),
+        },
+        Token {
+            token_type: TokenType::Eq,
+            literal: "==".to_string(),
+        },
+        Token {
+            token_type: TokenType::Int,
+            literal: "10".to_string(),
+        },
+        Token {
+            token_type: TokenType::Semicolon,
+            literal: ";".to_string(),
+        },
+        Token {
+            token_type: TokenType::Int,
+            literal: "10".to_string(),
+        },
+        Token {
+            token_type: TokenType::Neq,
+            literal: "!=".to_string(),
+        },
+        Token {
+            token_type: TokenType::Int,
+            literal: "9".to_string(),
         },
         Token {
             token_type: TokenType::Semicolon,
