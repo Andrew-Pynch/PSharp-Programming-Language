@@ -1,4 +1,6 @@
-use crate::token::{Token, TokenType};
+use std::{env::current_exe, thread::current};
+
+use crate::token::{is_keyword, lookup_keyword_token_type, Token, TokenType};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Lexer {
@@ -35,7 +37,6 @@ impl Lexer {
     }
 
     pub fn generate_all_tokens(&mut self) {
-        println!("Generating lexer tokens...");
         let mut _tokens = Vec::new();
 
         while !self.is_at_end {
@@ -69,6 +70,38 @@ impl Lexer {
         return false;
     }
 
+    pub fn is_singleton_operator(&mut self, ch: char, next_ch: char) -> bool {
+        // a singleton operator is an operator that is not followed by another operator
+        if self.char_is_operand(ch) && !self.char_is_operand(next_ch) {
+            return true;
+        }
+        return false;
+    }
+
+    pub fn is_double_operator(&mut self, ch: char, next_ch: char) -> bool {
+        // a double operator is an operator that is followed by an = sign
+        if self.char_is_operand(ch) && next_ch == '-' {
+            return true;
+        }
+        return false;
+    }
+
+    pub fn is_singleton_value_comparator(&mut self, ch: char, next_ch: char) -> bool {
+        // a singleton value comparator is a value comparator not followed by =
+        if self.char_is_value_comparator(ch) && next_ch != '=' {
+            return true;
+        }
+        return false;
+    }
+
+    pub fn is_double_value_comparator(&mut self, ch: char, next_ch: char) -> bool {
+        // a double operator is an operator followed by an =
+        if self.char_is_value_comparator(ch) && next_ch == '=' {
+            return true;
+        }
+        return false;
+    }
+
     pub fn get_operand_or_value_comparator_token(&mut self) -> Token {
         let mut token: Token = Token::new(TokenType::Uninitialized, String::new());
         let mut next_char: char;
@@ -80,47 +113,53 @@ impl Lexer {
             next_char = '\0';
         }
 
-        // if the next char is a value comparator
-        // i.e dont want to match if char == '!' and next char is whitespace or
-        // something else
-        if self.char_is_value_comparator(next_char) || self.char_is_operand(next_char) {
-            if self.ch == '+' && next_char == '=' {
-                token = Token::new(TokenType::PlusAssign, "+=".to_string());
-            } else if self.ch == '-' && next_char == '=' {
-                token = Token::new(TokenType::MinusAssign, "-=".to_string());
-            } else if self.ch == '*' && next_char == '=' {
-                token = Token::new(TokenType::AsteriskAssign, "*=".to_string());
-            } else if self.ch == '/' && next_char == '=' {
-                token = Token::new(TokenType::SlashAssign, "/=".to_string());
-            } else if self.ch == '<' && next_char == '=' {
-                token = Token::new(TokenType::Lte, "<=".to_string());
-            } else if self.ch == '>' && next_char == '=' {
-                token = Token::new(TokenType::Gte, ">=".to_string());
-            } else if self.ch == '=' && next_char == '=' {
-                token = Token::new(TokenType::Eq, "==".to_string());
-            } else if self.ch == '!' && next_char == '=' {
-                token = Token::new(TokenType::Neq, "!=".to_string());
-            }
-            self.increment_position_set_char();
-        }
-        // otherwise, just return the token of the current char
-        else {
+        if self.is_singleton_operator(self.ch, next_char) {
             if self.ch == '=' {
-                token = Token::new(TokenType::Assign, "=".to_string());
+                token = Token::new(TokenType::Assign, self.ch.to_string());
             } else if self.ch == '+' {
-                token = Token::new(TokenType::Plus, "+".to_string());
+                token = Token::new(TokenType::Plus, self.ch.to_string());
             } else if self.ch == '-' {
-                token = Token::new(TokenType::Minus, "-".to_string());
+                token = Token::new(TokenType::Minus, self.ch.to_string());
             } else if self.ch == '!' {
-                token = Token::new(TokenType::Bang, "!".to_string());
-            } else if self.ch == '/' {
-                token = Token::new(TokenType::Slash, "/".to_string());
+                token = Token::new(TokenType::Bang, self.ch.to_string());
             } else if self.ch == '*' {
-                token = Token::new(TokenType::Asterisk, "*".to_string());
+                token = Token::new(TokenType::Asterisk, self.ch.to_string());
+            } else if self.ch == '/' {
+                token = Token::new(TokenType::Slash, self.ch.to_string());
+            }
+        } else if self.is_singleton_value_comparator(self.ch, next_char) {
+            if self.ch == '>' {
+                token = Token::new(TokenType::Gt, self.ch.to_string());
             } else if self.ch == '<' {
-                token = Token::new(TokenType::Lt, "<".to_string());
-            } else if self.ch == '>' {
-                token = Token::new(TokenType::Gt, ">".to_string());
+                token = Token::new(TokenType::Lt, self.ch.to_string());
+            }
+        } else if self.is_double_operator(self.ch, next_char) {
+            // we wrap this in this condition, since ever double operator is
+            // proceeded be an = sign
+            if next_char == '=' {
+                if self.ch == '+' {
+                    token = Token::new(TokenType::PlusAssign, self.ch.to_string());
+                } else if self.ch == '-' {
+                    token = Token::new(TokenType::MinusAssign, self.ch.to_string());
+                } else if self.ch == '*' {
+                    token = Token::new(TokenType::AsteriskAssign, self.ch.to_string());
+                } else if self.ch == '/' {
+                    token = Token::new(TokenType::SlashAssign, self.ch.to_string());
+                }
+            }
+        } else if self.is_double_value_comparator(self.ch, next_char) {
+            // we wrap this in this condition, since ever double operator is
+            // proceeded be an = sign
+            if next_char == '=' {
+                if self.ch == '>' {
+                    token = Token::new(TokenType::Gte, self.ch.to_string());
+                } else if self.ch == '<' {
+                    token = Token::new(TokenType::Lte, self.ch.to_string());
+                } else if self.ch == '=' {
+                    token = Token::new(TokenType::Eq, self.ch.to_string());
+                } else if self.ch == '!' {
+                    token = Token::new(TokenType::Neq, self.ch.to_string());
+                }
             }
         }
 
@@ -129,7 +168,6 @@ impl Lexer {
 
     pub fn get_token_at_current_block(&mut self) -> Token {
         let mut token: Token = Token::new(TokenType::Uninitialized, "".to_string());
-
         self.skip_whitespace();
 
         // Value comparison >=, >, <=, <, ==, !=
@@ -143,24 +181,24 @@ impl Lexer {
         } else if self.ch == ';' {
             token = Token::new(TokenType::Semicolon, self.ch.to_string());
         } else if self.ch == '(' {
-            token = Token::new(TokenType::Lparen, self.ch.to_string());
+            token = Token::new(TokenType::LParen, self.ch.to_string());
         } else if self.ch == ')' {
-            token = Token::new(TokenType::Rparen, self.ch.to_string());
+            token = Token::new(TokenType::RParen, self.ch.to_string());
         } else if self.ch == '{' {
-            token = Token::new(TokenType::Lbrace, self.ch.to_string());
+            token = Token::new(TokenType::LBrace, self.ch.to_string());
         } else if self.ch == '}' {
-            token = Token::new(TokenType::Rbrace, self.ch.to_string());
+            token = Token::new(TokenType::RBrace, self.ch.to_string());
         } else if self.ch == '[' {
-            token = Token::new(TokenType::Lbrace, self.ch.to_string());
+            token = Token::new(TokenType::LBrace, self.ch.to_string());
         } else if self.ch == ']' {
-            token = Token::new(TokenType::Rbrace, self.ch.to_string());
+            token = Token::new(TokenType::RBrace, self.ch.to_string());
         } else if self.ch == '\0' {
             token = Token::new(TokenType::Eof, self.ch.to_string());
             self.is_at_end = true;
         } else {
             if self.ch.is_alphabetic() {
                 let identifier_chars = self.read_identifier();
-                token = Token::new(TokenType::Ident, identifier_chars.to_string());
+                token = self.get_identifier_token(identifier_chars);
             } else if self.ch.is_numeric() {
                 let number_chars = self.read_number();
                 token = Token::new(TokenType::Int, number_chars.to_string());
@@ -168,11 +206,21 @@ impl Lexer {
                 // this line might be a problem
                 token = Token::new(TokenType::Illegal, self.ch.to_string());
             }
+            return token;
         }
-
         self.increment_position_set_char();
 
         return token;
+    }
+
+    // returns the string literal, or the identifier if it is not a string literal
+    pub fn get_identifier_token(&mut self, identifier_chars: String) -> Token {
+        if is_keyword(identifier_chars.clone()) {
+            let token_type: TokenType = lookup_keyword_token_type(identifier_chars.clone());
+            return Token::new(token_type, identifier_chars);
+        } else {
+            return Token::new(TokenType::Ident, identifier_chars);
+        }
     }
 
     pub fn skip_whitespace(&mut self) {

@@ -1,5 +1,9 @@
 use std::str::FromStr;
 
+pub const KEYWORDS: [&str; 8] = [
+    "func", "let", "const", "true", "false", "if", "else", "return",
+];
+
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TokenType {
     Uninitialized,
@@ -13,15 +17,15 @@ pub enum TokenType {
     // solo samuel's
     // ============
     // Operators
-    Assign,
-    Plus,
-    Minus,
-    Bang,
-    Asterisk,
-    Slash,
+    Assign,   // =
+    Plus,     // +
+    Minus,    // -
+    Bang,     // ! returns the inverse of an expression. !true is false, !false is true.
+    Asterisk, // *
+    Slash,    // /
     // Value comparison
-    Lt,
-    Gt,
+    Lt, // <
+    Gt, // >
     // ==============
     // double dussy's
     // ==============
@@ -38,10 +42,10 @@ pub enum TokenType {
     // Delimiters
     Comma,
     Semicolon,
-    Lparen,
-    Rparen,
-    Lbrace,
-    Rbrace,
+    LParen,
+    RParen,
+    LBrace,
+    RBrace,
     // Keywords
     Function,
     Let,
@@ -60,13 +64,13 @@ impl FromStr for TokenType {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "UNINITIALIZED" => Ok(TokenType::Illegal),
+            // "UNINITIALIZED" => Ok(TokenType::Illegal),
 
-            "ILLEGAL" => Ok(TokenType::Illegal),
-            "EOF" => Ok(TokenType::Eof),
+            // "illegal" => Ok(TokenType::Illegal),
+            // "" => Ok(TokenType::Eof),
             // Identifiers + literals
-            "IDENT" => Ok(TokenType::Ident),
-            "INT" => Ok(TokenType::Int),
+            // "IDENT" => Ok(TokenType::Ident),
+            // "INT" => Ok(TokenType::Int),
             // Operators
             "=" => Ok(TokenType::Assign),
             "+" => Ok(TokenType::Plus),
@@ -88,19 +92,19 @@ impl FromStr for TokenType {
             // Delimiters
             "," => Ok(TokenType::Comma),
             ";" => Ok(TokenType::Semicolon),
-            "(" => Ok(TokenType::Lparen),
-            ")" => Ok(TokenType::Rparen),
-            "{" => Ok(TokenType::Lbrace),
-            "}" => Ok(TokenType::Rbrace),
+            "(" => Ok(TokenType::LParen),
+            ")" => Ok(TokenType::RParen),
+            "{" => Ok(TokenType::LBrace),
+            "}" => Ok(TokenType::RBrace),
             // Keywords
-            "FUNCTION" => Ok(TokenType::Function),
-            "LET" => Ok(TokenType::Let),
-            "CONST" => Ok(TokenType::Const),
-            "TRUE" => Ok(TokenType::True),
-            "FALSE" => Ok(TokenType::False),
-            "IF" => Ok(TokenType::If),
-            "ELSE" => Ok(TokenType::Else),
-            "RETURN" => Ok(TokenType::Return),
+            "func" => Ok(TokenType::Function),
+            "let" => Ok(TokenType::Let),
+            "const" => Ok(TokenType::Const),
+            "true" => Ok(TokenType::True),
+            "false" => Ok(TokenType::False),
+            "if" => Ok(TokenType::If),
+            "else" => Ok(TokenType::Else),
+            "return" => Ok(TokenType::Return),
             _ => Err(NotAToken),
         }
     }
@@ -130,4 +134,38 @@ impl std::fmt::Display for Token {
 pub fn lookup_identifier(identifier: &str) -> TokenType {
     let token_type = TokenType::from_str(identifier).unwrap();
     return token_type;
+}
+
+// function to check if a string is a keyword
+pub fn is_keyword(identifier_chars: String) -> bool {
+    for keyword in KEYWORDS {
+        if keyword == identifier_chars {
+            return true;
+        }
+    }
+    return false;
+}
+
+// function to return the keyword for a string literal
+pub fn lookup_keyword_token_type(identifier_chars: String) -> TokenType {
+    if identifier_chars == "func" {
+        return TokenType::Function;
+    } else if identifier_chars == "let" {
+        return TokenType::Let;
+    } else if identifier_chars == "const" {
+        return TokenType::Const;
+    } else if identifier_chars == "true" {
+        return TokenType::True;
+    } else if identifier_chars == "false" {
+        return TokenType::False;
+    } else if identifier_chars == "if" {
+        return TokenType::If;
+    } else if identifier_chars == "else" {
+        return TokenType::Else;
+    } else if identifier_chars == "return" {
+        return TokenType::Return;
+    } else {
+        dbg!(identifier_chars.clone());
+        return TokenType::Uninitialized;
+    }
 }

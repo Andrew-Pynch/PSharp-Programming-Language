@@ -18,9 +18,10 @@ pub fn start() {
         counter += 1;
 
         print!("{}", PROMPT);
-        io::stdout().flush().unwrap();
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
+        // io::stdout().flush().unwrap();
+        // let mut input = String::new();
+        // io::stdin().read_line(&mut input).unwrap();
+        let input = "!-/*5;";
 
         if input.len() == 0 {
             continue;
