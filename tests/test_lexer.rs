@@ -324,7 +324,7 @@ fn test_generate_all_tokens() {
             literal: "\0".to_string(),
         },
     ];
-    // assert_eq!(lexer.tokens.len(), test_tokens.len());
+    assert_eq!(lexer.tokens.len(), test_tokens.len());
 
     for (i, token) in lexer.tokens.iter().enumerate() {
         dbg!(token, test_tokens[i].clone());
