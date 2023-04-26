@@ -31,21 +31,23 @@ impl Lexer {
     }
 
     pub fn next_token(&mut self) -> Token {
+        let tok: Token;
+
         self.skip_whitespace();
 
-        let tok: Token = if self.ch.is_alphabetic() {
+        if self.ch.is_alphabetic() {
             let literal: String = self.read_identifier();
-            Token {
+            tok = Token {
                 token_type: token::lookup_ident(&literal),
                 literal: literal,
             }
         } else if self.ch.is_numeric() {
-            Token {
+            tok = Token {
                 token_type: TokenType::INT,
                 literal: self.read_number(),
             }
         } else {
-            match self.ch {
+            tok = match self.ch {
                 '=' => Token {
                     token_type: TokenType::ASSIGN,
                     literal: self.ch.to_string(),

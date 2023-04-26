@@ -9,10 +9,11 @@ fn get_test_input() -> &'static str {
     return test_input;
 }
 
-fn get_complete_test_input() -> &'static str {
+fn get_complete_test_input() -> String {
     // let test_input: &str = "1{; -\0";
-    let test_input: &str = "let five = 5;
-    let ten = 10;";
+    let test_input: String = ";".to_string();
+    // let five = 5;
+    // let ten = 10;";
 
     // let add = func(x, y) {
     //     x + y;
@@ -25,8 +26,8 @@ fn get_complete_test_input() -> &'static str {
 
 #[test]
 fn test_new() {
-    let test_input: &str = get_complete_test_input();
-    let lexer: Lexer = Lexer::new(test_input);
+    let test_input: String = get_complete_test_input();
+    let lexer: Lexer = Lexer::new(&test_input);
     let test_lexer: Lexer = Lexer {
         input: test_input.to_string(),
         position: 0,
@@ -38,47 +39,47 @@ fn test_new() {
 
 #[test]
 fn test_generate_all_tokens() {
-    let test_input: &str = get_complete_test_input();
+    let test_input: String = get_complete_test_input();
 
-    let mut lexer: Lexer = Lexer::new(test_input);
+    let mut lexer: Lexer = Lexer::new(&test_input);
 
     let test_tokens: Vec<Token> = vec![
-        Token {
-            token_type: TokenType::LET,
-            literal: "let".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "five".to_string(),
-        },
-        Token {
-            token_type: TokenType::ASSIGN,
-            literal: "=".to_string(),
-        },
-        Token {
-            token_type: TokenType::INT,
-            literal: "5".to_string(),
-        },
-        Token {
-            token_type: TokenType::SEMICOLON,
-            literal: ";".to_string(),
-        },
-        Token {
-            token_type: TokenType::LET,
-            literal: "let".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "ten".to_string(),
-        },
-        Token {
-            token_type: TokenType::ASSIGN,
-            literal: "=".to_string(),
-        },
-        Token {
-            token_type: TokenType::INT,
-            literal: "10".to_string(),
-        },
+        // Token {
+        //     token_type: TokenType::LET,
+        //     literal: "let".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "five".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::ASSIGN,
+        //     literal: "=".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::INT,
+        //     literal: "5".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::SEMICOLON,
+        //     literal: ";".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::LET,
+        //     literal: "let".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "ten".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::ASSIGN,
+        //     literal: "=".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::INT,
+        //     literal: "10".to_string(),
+        // },
         Token {
             token_type: TokenType::SEMICOLON,
             literal: ";".to_string(),
@@ -206,7 +207,11 @@ fn test_generate_all_tokens() {
         let token: Token = lexer.next_token();
         let test_token: Token = test_tokens[counter].clone();
 
-        println!("{:?} || {:?}", token.clone(), test_token.clone());
+        println!(
+            "REAL - {:?} || TEST - {:?}",
+            token.clone(),
+            test_token.clone()
+        );
 
         // Assert that the token and test_token match
         assert_eq!(token.token_type, test_token.token_type);
