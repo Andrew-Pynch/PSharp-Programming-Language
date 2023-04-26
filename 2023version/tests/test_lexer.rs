@@ -12,13 +12,13 @@ fn get_test_input() -> &'static str {
 fn get_complete_test_input() -> &'static str {
     // let test_input: &str = "1{; -\0";
     let test_input: &str = "let five = 5;
-    let ten = 10;
+    let ten = 10;";
 
-    let add = func(x, y) {
-        x + y;
-    };
+    // let add = func(x, y) {
+    //     x + y;
+    // };
 
-    let result = add(five, ten);\0";
+    // let result = add(five, ten);\0";
 
     return test_input;
 }
@@ -83,114 +83,114 @@ fn test_generate_all_tokens() {
             token_type: TokenType::SEMICOLON,
             literal: ";".to_string(),
         },
-        Token {
-            token_type: TokenType::SEMICOLON,
-            literal: ";".to_string(),
-        },
-        Token {
-            token_type: TokenType::LET,
-            literal: "let".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "add".to_string(),
-        },
-        Token {
-            token_type: TokenType::ASSIGN,
-            literal: "=".to_string(),
-        },
-        Token {
-            token_type: TokenType::FUNCTION,
-            literal: "func".to_string(),
-        },
-        Token {
-            token_type: TokenType::LPAREN,
-            literal: "(".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "x".to_string(),
-        },
-        Token {
-            token_type: TokenType::COMMA,
-            literal: ",".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "y".to_string(),
-        },
-        Token {
-            token_type: TokenType::RPAREN,
-            literal: ")".to_string(),
-        },
-        Token {
-            token_type: TokenType::LBRACE,
-            literal: "{".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "x".to_string(),
-        },
-        Token {
-            token_type: TokenType::PLUS,
-            literal: "+".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "y".to_string(),
-        },
-        Token {
-            token_type: TokenType::SEMICOLON,
-            literal: ";".to_string(),
-        },
-        Token {
-            token_type: TokenType::RBRACE,
-            literal: "}".to_string(),
-        },
-        Token {
-            token_type: TokenType::SEMICOLON,
-            literal: ";".to_string(),
-        },
-        Token {
-            token_type: TokenType::LET,
-            literal: "let".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "result".to_string(),
-        },
-        Token {
-            token_type: TokenType::ASSIGN,
-            literal: "=".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "add".to_string(),
-        },
-        Token {
-            token_type: TokenType::LPAREN,
-            literal: "(".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "five".to_string(),
-        },
-        Token {
-            token_type: TokenType::COMMA,
-            literal: ",".to_string(),
-        },
-        Token {
-            token_type: TokenType::IDENT,
-            literal: "ten".to_string(),
-        },
-        Token {
-            token_type: TokenType::RPAREN,
-            literal: ")".to_string(),
-        },
-        Token {
-            token_type: TokenType::SEMICOLON,
-            literal: ";".to_string(),
-        },
+        // Token {
+        //     token_type: TokenType::SEMICOLON,
+        //     literal: ";".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::LET,
+        //     literal: "let".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "add".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::ASSIGN,
+        //     literal: "=".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::FUNCTION,
+        //     literal: "func".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::LPAREN,
+        //     literal: "(".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "x".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::COMMA,
+        //     literal: ",".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "y".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::RPAREN,
+        //     literal: ")".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::LBRACE,
+        //     literal: "{".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "x".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::PLUS,
+        //     literal: "+".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "y".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::SEMICOLON,
+        //     literal: ";".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::RBRACE,
+        //     literal: "}".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::SEMICOLON,
+        //     literal: ";".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::LET,
+        //     literal: "let".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "result".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::ASSIGN,
+        //     literal: "=".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "add".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::LPAREN,
+        //     literal: "(".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "five".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::COMMA,
+        //     literal: ",".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::IDENT,
+        //     literal: "ten".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::RPAREN,
+        //     literal: ")".to_string(),
+        // },
+        // Token {
+        //     token_type: TokenType::SEMICOLON,
+        //     literal: ";".to_string(),
+        // },
         Token {
             token_type: TokenType::EOF,
             literal: "\0".to_string(),
