@@ -21,9 +21,7 @@ impl std::fmt::Display for Token {
     }
 }
 
-pub const KEYWORDS: [&str; 8] = [
-    "func", "let", "const", "true", "false", "if", "else", "return",
-];
+pub const KEYWORDS: [&str; 7] = ["func", "let", "true", "false", "if", "else", "return"];
 
 pub fn lookup_ident(ident: &str) -> TokenType {
     // Check if the identifier is a keyword
@@ -51,6 +49,16 @@ pub enum TokenType {
     // Operators
     ASSIGN,
     PLUS,
+    MINUS,
+    BANG,
+    ASTERISK,
+    SLASH,
+
+    LT,
+    GT,
+
+    EQ,
+    NOT_EQ,
 
     // Delimiters
     COMMA,
@@ -64,6 +72,11 @@ pub enum TokenType {
     // Keywords
     FUNCTION,
     LET,
+    TRUE,
+    FALSE,
+    IF,
+    ELSE,
+    RETURN,
 }
 
 #[derive(Debug, PartialEq)]
@@ -97,6 +110,11 @@ impl FromStr for TokenType {
             // Keywords
             "func" => Ok(TokenType::FUNCTION),
             "let" => Ok(TokenType::LET),
+            "true" => Ok(TokenType::TRUE),
+            "false" => Ok(TokenType::FALSE),
+            "if" => Ok(TokenType::IF),
+            "else" => Ok(TokenType::ELSE),
+            "return" => Ok(TokenType::RETURN),
             _ => Err(NotAToken),
         }
     }

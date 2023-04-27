@@ -55,12 +55,32 @@ impl Lexer {
             Token::new(TokenType::INT, number)
         } else {
             let tok = match self.ch {
-                '=' => Token::new(TokenType::ASSIGN, self.ch.to_string()),
+                '=' => {
+                    if self.peek_char() == '=' {
+                        self.read_char();
+                        Token::new(TokenType::EQ, "==".to_string())
+                    } else {
+                        Token::new(TokenType::ASSIGN, self.ch.to_string())
+                    }
+                }
+                '+' => Token::new(TokenType::PLUS, self.ch.to_string()),
+                '-' => Token::new(TokenType::MINUS, self.ch.to_string()),
+                '!' => {
+                    if self.peek_char() == '=' {
+                        self.read_char();
+                        Token::new(TokenType::NOT_EQ, "!=".to_string())
+                    } else {
+                        Token::new(TokenType::BANG, self.ch.to_string())
+                    }
+                }
+                '/' => Token::new(TokenType::SLASH, self.ch.to_string()),
+                '*' => Token::new(TokenType::ASTERISK, self.ch.to_string()),
+                '<' => Token::new(TokenType::LT, self.ch.to_string()),
+                '>' => Token::new(TokenType::GT, self.ch.to_string()),
                 ';' => Token::new(TokenType::SEMICOLON, self.ch.to_string()),
                 '(' => Token::new(TokenType::LPAREN, self.ch.to_string()),
                 ')' => Token::new(TokenType::RPAREN, self.ch.to_string()),
                 ',' => Token::new(TokenType::COMMA, self.ch.to_string()),
-                '+' => Token::new(TokenType::PLUS, self.ch.to_string()),
                 '{' => Token::new(TokenType::LBRACE, self.ch.to_string()),
                 '}' => Token::new(TokenType::RBRACE, self.ch.to_string()),
                 '\0' => Token::new(TokenType::EOF, self.ch.to_string()),
@@ -94,6 +114,15 @@ impl Lexer {
     pub fn skip_whitespace(&mut self) {
         while self.ch == ' ' || self.ch == '\t' || self.ch == '\n' || self.ch == '\r' {
             self.read_char();
+        }
+    }
+
+    // peeks ahead without incrementing pos or read pos
+    pub fn peek_char(&mut self) -> char {
+        if self.read_position >= self.input.len() {
+            return '\0';
+        } else {
+            return self.input.as_bytes()[self.read_position] as char;
         }
     }
 }
