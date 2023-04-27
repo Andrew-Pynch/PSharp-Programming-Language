@@ -43,15 +43,27 @@ impl Lexer {
     }
 
     pub fn next_token(&mut self) -> Token {
+        if self.position > 0 {
+            self.read_char();
+        }
+
         self.skip_whitespace();
 
-        let tok: Token = if is_letter(self.ch) {
+        let isLetter = is_letter(self.ch);
+        let isDigit = is_digit(self.ch);
+
+        if is_letter(self.ch) {
             let literal = self.read_identifier();
-            Token::new(token::lookup_ident(&literal), literal)
+            let res: Token = Token::new(token::lookup_ident(&literal), literal);
+
+            return res;
         } else if is_digit(self.ch) {
-            Token::new(TokenType::INT, self.read_number())
+            let number = self.read_number();
+            let res: Token = Token::new(TokenType::INT, number);
+
+            return res;
         } else {
-            match self.ch {
+            let res: Token = match self.ch {
                 '=' => Token::new(TokenType::ASSIGN, self.ch.to_string()),
                 ';' => Token::new(TokenType::SEMICOLON, self.ch.to_string()),
                 '(' => Token::new(TokenType::LPAREN, self.ch.to_string()),
@@ -62,14 +74,10 @@ impl Lexer {
                 '}' => Token::new(TokenType::RBRACE, self.ch.to_string()),
                 '\0' => Token::new(TokenType::EOF, self.ch.to_string()),
                 _ => Token::new(TokenType::ILLEGAL, self.ch.to_string()),
-            }
+            };
+
+            return res;
         };
-
-        self.read_char(); // read next char to advance positions before we return
-                          // the token at current read position
-
-        dbg!(tok.clone());
-        return tok;
     }
 
     pub fn read_identifier(&mut self) -> String {
@@ -93,15 +101,6 @@ impl Lexer {
 
     pub fn skip_whitespace(&mut self) {
         while self.ch == ' ' || self.ch == '\t' || self.ch == '\n' || self.ch == '\r' {
-            // println!(
-            //     "Skipping whitespace at position: {} \nfor char: {}",
-            //     self.position, self.ch
-            // );
-
-            // println!("read_position: {}", self.read_position);
-
-            // println!("input: {}", self.input);
-
             self.read_char();
         }
     }

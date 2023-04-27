@@ -32,13 +32,15 @@ pub fn start() {
             break;
         }
 
+        // combine input with "let;"
+        // input.push_str("let;");
         let mut lexer = Lexer::new(&input);
         let mut tokens = Vec::new();
 
         loop {
             let tok = lexer.next_token();
             tokens.push(tok.clone());
-            println!("\n Token: {:?} \nChar: {:?}", tok, lexer.ch.clone());
+            println!("\n Token: {:?} \nLexer: {:?}", tok, lexer);
 
             if tok.token_type == TokenType::EOF {
                 break;
