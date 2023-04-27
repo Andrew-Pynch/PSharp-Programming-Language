@@ -3,15 +3,7 @@ use psharp_programming_language::{
     token::{Token, TokenType},
 };
 
-fn get_test_input() -> &'static str {
-    // let test_input: &str = "1{; -\0";
-    let test_input: &str = "=+(){},;";
-    return test_input;
-}
-
-fn get_complete_test_input() -> String {
-    // let test_input: String = "let;".to_string();
-    // let test_input: String = "let five = 5;".to_string();
+fn get_test_input() -> String {
     let test_input: String = "let five = 5; 
         let ten = 10;
 
@@ -39,7 +31,7 @@ fn get_complete_test_input() -> String {
 
 #[test]
 fn test_new() {
-    let test_input: String = get_complete_test_input();
+    let test_input: String = get_test_input();
     let lexer: Lexer = Lexer::new(&test_input);
     let test_lexer: Lexer = Lexer {
         input: test_input.to_string(),
@@ -52,7 +44,7 @@ fn test_new() {
 
 #[test]
 fn test_generate_all_tokens() {
-    let test_input: String = get_complete_test_input();
+    let test_input: String = get_test_input();
 
     let mut lexer: Lexer = Lexer::new(&test_input);
 

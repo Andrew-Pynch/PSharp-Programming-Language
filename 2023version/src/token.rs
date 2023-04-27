@@ -77,6 +77,8 @@ pub enum TokenType {
     IF,
     ELSE,
     RETURN,
+
+    UNINITIALIZED,
 }
 
 #[derive(Debug, PartialEq)]
