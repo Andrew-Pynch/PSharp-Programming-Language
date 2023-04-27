@@ -19,7 +19,7 @@ fn get_complete_test_input() -> String {
             x + y;
         };
 
-        let result = add(five, ten)
+        let result = add(five, ten);
     "
     .to_string();
 
