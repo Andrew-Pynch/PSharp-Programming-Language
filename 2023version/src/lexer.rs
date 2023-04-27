@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::token::{self, Token, TokenType};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -6,6 +8,16 @@ pub struct Lexer {
     pub position: usize, // points to char in input that corresponds to ch byte
     pub read_position: usize, // points to next char in input
     pub ch: char,
+}
+
+impl std::fmt::Display for Lexer {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Lexer {{\n  input: \"{}\",\n  position: {},\n  read_position: {},\n  ch: '{}'\n}}",
+            self.input, self.position, self.read_position, self.ch
+        )
+    }
 }
 
 impl Lexer {
@@ -31,91 +43,74 @@ impl Lexer {
     }
 
     pub fn next_token(&mut self) -> Token {
-        let tok: Token;
-
         self.skip_whitespace();
 
-        if self.ch.is_alphabetic() {
-            let literal: String = self.read_identifier();
-            tok = Token {
-                token_type: token::lookup_ident(&literal),
-                literal: literal,
-            }
-        } else if self.ch.is_numeric() {
-            tok = Token {
-                token_type: TokenType::INT,
-                literal: self.read_number(),
-            }
+        let tok: Token = if is_letter(self.ch) {
+            let literal = self.read_identifier();
+            Token::new(token::lookup_ident(&literal), literal)
+        } else if is_digit(self.ch) {
+            Token::new(TokenType::INT, self.read_number())
         } else {
-            tok = match self.ch {
-                '=' => Token {
-                    token_type: TokenType::ASSIGN,
-                    literal: self.ch.to_string(),
-                },
-                ';' => Token {
-                    token_type: TokenType::SEMICOLON,
-                    literal: self.ch.to_string(),
-                },
-                '(' => Token {
-                    token_type: TokenType::LPAREN,
-                    literal: self.ch.to_string(),
-                },
-                ')' => Token {
-                    token_type: TokenType::RPAREN,
-                    literal: self.ch.to_string(),
-                },
-                ',' => Token {
-                    token_type: TokenType::COMMA,
-                    literal: self.ch.to_string(),
-                },
-                '+' => Token {
-                    token_type: TokenType::PLUS,
-                    literal: self.ch.to_string(),
-                },
-                '{' => Token {
-                    token_type: TokenType::LBRACE,
-                    literal: self.ch.to_string(),
-                },
-                '}' => Token {
-                    token_type: TokenType::RBRACE,
-                    literal: self.ch.to_string(),
-                },
-                '\0' => Token {
-                    token_type: TokenType::EOF,
-                    literal: self.ch.to_string(),
-                },
-                _ => Token {
-                    token_type: TokenType::ILLEGAL,
-                    literal: self.ch.to_string(),
-                },
+            match self.ch {
+                '=' => Token::new(TokenType::ASSIGN, self.ch.to_string()),
+                ';' => Token::new(TokenType::SEMICOLON, self.ch.to_string()),
+                '(' => Token::new(TokenType::LPAREN, self.ch.to_string()),
+                ')' => Token::new(TokenType::RPAREN, self.ch.to_string()),
+                ',' => Token::new(TokenType::COMMA, self.ch.to_string()),
+                '+' => Token::new(TokenType::PLUS, self.ch.to_string()),
+                '{' => Token::new(TokenType::LBRACE, self.ch.to_string()),
+                '}' => Token::new(TokenType::RBRACE, self.ch.to_string()),
+                '\0' => Token::new(TokenType::EOF, self.ch.to_string()),
+                _ => Token::new(TokenType::ILLEGAL, self.ch.to_string()),
             }
         };
 
         self.read_char(); // read next char to advance positions before we return
                           // the token at current read position
 
+        dbg!(tok.clone());
         return tok;
     }
 
     pub fn read_identifier(&mut self) -> String {
         let position: usize = self.position;
-        while self.ch.is_alphabetic() {
+        while is_letter(self.ch) {
             self.read_char();
         }
-        return self.input[position..self.position].to_string();
+        // just packing this in intermediate result so I can debug
+        let result: String = self.input[position..self.position].to_string();
+        dbg!(result.clone());
+        return result;
     }
 
     pub fn read_number(&mut self) -> String {
         let position: usize = self.position;
-        while self.ch.is_numeric() {
+        while self.ch.is_ascii_digit() {
             self.read_char();
         }
         return self.input[position..self.position].to_string();
     }
 
     pub fn skip_whitespace(&mut self) {
-        while self.ch.is_ascii_whitespace() {
+        while self.ch == ' ' || self.ch == '\t' || self.ch == '\n' || self.ch == '\r' {
+            // println!(
+            //     "Skipping whitespace at position: {} \nfor char: {}",
+            //     self.position, self.ch
+            // );
+
+            // println!("read_position: {}", self.read_position);
+
+            // println!("input: {}", self.input);
+
             self.read_char();
         }
     }
+}
+
+pub fn is_letter(ch: char) -> bool {
+    return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_';
+}
+
+pub fn is_digit(ch: char) -> bool {
+    return '0' <= ch && ch <= '9';
 }

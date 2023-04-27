@@ -72,7 +72,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LBRACKET, l.ch)
 	case ']':
 		tok = newToken(token.RBRACKET, l.ch)
-	case 0:
+	case 0:skip_whitespace
 		tok.Literal = ""
 		tok.Type = token.EOF
 	default:
