@@ -81,7 +81,8 @@ impl Lexer {
 
     pub fn read_identifier(&mut self) -> String {
         let position: usize = self.position;
-        while is_letter(self.ch) {
+        let next_char: char = self.input.as_bytes()[self.position + 1] as char;
+        while is_letter(next_char) {
             self.read_char();
         }
         // just packing this in intermediate result so I can debug
