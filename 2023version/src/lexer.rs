@@ -45,9 +45,6 @@ impl Lexer {
     pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
 
-        let isLetter = is_letter(self.ch);
-        let isDigit = is_digit(self.ch);
-
         let tok: Token = if is_letter(self.ch) {
             let literal = self.read_identifier();
 
@@ -69,13 +66,12 @@ impl Lexer {
                 '\0' => Token::new(TokenType::EOF, self.ch.to_string()),
                 _ => Token::new(TokenType::ILLEGAL, self.ch.to_string()),
             };
+            self.read_char(); // read next char to advance positions before we return
+                              // the token at current read position
             tok
         };
 
-        self.read_char(); // read next char to advance positions before we return
-                          // the token at current read position
-
-        dbg!(tok.clone());
+        // dbg!(tok.clone());
         return tok;
     }
 
@@ -84,10 +80,7 @@ impl Lexer {
         while is_letter(self.ch) {
             self.read_char();
         }
-        // just packing this in intermediate result so I can debug
-        let result: String = self.input[position..self.position].to_string();
-        dbg!(result.clone());
-        return result;
+        return self.input[position..self.position].to_string();
     }
 
     pub fn read_number(&mut self) -> String {
@@ -100,15 +93,6 @@ impl Lexer {
 
     pub fn skip_whitespace(&mut self) {
         while self.ch == ' ' || self.ch == '\t' || self.ch == '\n' || self.ch == '\r' {
-            // println!(
-            //     "Skipping whitespace at position: {} \nfor char: {}",
-            //     self.position, self.ch
-            // );
-
-            // println!("read_position: {}", self.read_position);
-
-            // println!("input: {}", self.input);
-
             self.read_char();
         }
     }
