@@ -52,6 +52,12 @@ pub struct Statement {
     pub statement_type: StatementType,
 }
 
+impl fmt::Display for Statement {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.statement_type)
+    }
+}
+
 #[derive(PartialEq, Clone, Debug)]
 pub enum Expression {
     Identifier(Identifier),
@@ -67,6 +73,15 @@ impl fmt::Display for Expression {
 
 pub struct Program {
     pub statements: Vec<Statement>,
+}
+
+impl fmt::Display for Program {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for statement in &self.statements {
+            write!(f, "{}", statement)?;
+        }
+        Ok(())
+    }
 }
 
 impl Program {
