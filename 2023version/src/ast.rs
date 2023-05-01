@@ -1,4 +1,5 @@
 use crate::token::{Token, TokenType};
+use std::fmt;
 
 #[derive(PartialEq, Clone, Debug)]
 pub struct Identifier {
@@ -14,6 +15,11 @@ impl Identifier {
         }
     }
 }
+impl fmt::Display for Identifier {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.value)
+    }
+}
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum StatementType {
@@ -23,11 +29,27 @@ pub enum StatementType {
     Expression(Expression),
 }
 
+impl fmt::Display for StatementType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            StatementType::Blank => write!(f, "Blank"),
+            StatementType::LetStatement(identifier, expression) => {
+                write!(f, "LetStatement({}, {})", identifier, expression)
+            }
+            StatementType::ReturnStatement(expression) => {
+                write!(f, "ReturnStatement({})", expression)
+            }
+            StatementType::Expression(expression) => {
+                write!(f, "Expression({})", expression)
+            }
+        }
+    }
+}
+
 #[derive(PartialEq, Clone, Debug)]
 pub struct Statement {
     pub token: Token, // the token.LET token
     pub statement_type: StatementType,
-    pub name: Identifier,
 }
 
 #[derive(PartialEq, Clone, Debug)]
@@ -35,21 +57,10 @@ pub enum Expression {
     Identifier(Identifier),
 }
 
-pub struct LetStatement {
-    pub token: Token, // the token.LET token
-    pub name: Identifier,
-    pub value: Expression,
-}
-
-impl LetStatement {
-    pub fn new(tok: Token) -> LetStatement {
-        LetStatement {
-            token: tok,
-            name: Identifier::new(Token::new(TokenType::IDENT, "".to_string()), "".to_string()),
-            value: Expression::Identifier(Identifier::new(
-                Token::new(TokenType::IDENT, "".to_string()),
-                "".to_string(),
-            )),
+impl fmt::Display for Expression {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Expression::Identifier(identifier) => write!(f, "Identifier({})", identifier),
         }
     }
 }
