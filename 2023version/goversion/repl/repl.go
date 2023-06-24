@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/Andrew-Pynch/PSharp-Programming-Language/2023version/goversion/evaluator"
 	"github.com/Andrew-Pynch/PSharp-Programming-Language/2023version/goversion/lexer"
 	"github.com/Andrew-Pynch/PSharp-Programming-Language/2023version/goversion/parser"
 )
@@ -31,8 +32,11 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		io.WriteString(out, program.String())
-		io.WriteString(out, "\n")
+		evaluated := evaluator.Eval(program)
+		if evaluated != nil {
+			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, "\n")
+		}
 	}
 }
 
