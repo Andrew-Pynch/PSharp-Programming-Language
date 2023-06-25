@@ -1,5 +1,5 @@
 use psharp_programming_language::{
-    ast::{Expression, Identifier, Program, Statement, StatementType},
+    ast::{Expression, Identifier, LetStatement, Node, Program, ReturnStatement, Statement},
     lexer::Lexer,
     parser::Parser,
     token::{Token, TokenType},
@@ -40,8 +40,12 @@ fn test_let_statements() {
 
     // iterate and enumerate through the test cases
     for (i, tt) in tests.iter().enumerate() {
-        let stmt: Statement = program.statements[i].clone();
-        assert!(test_let_statement(stmt, tt.expected_identifier));
+        let stmt = &*program.statements[i];
+        if let Some(let_stmt) = stmt.as_any().downcast_ref::<LetStatement>() {
+            assert!(test_let_statement(let_stmt, tt.expected_identifier));
+        } else {
+            assert!(false, "not a LetStatement");
+        }
     }
 }
 
@@ -64,47 +68,28 @@ fn test_return_statements() {
 
     // iterate through the statements and check that they are all return statements
     for stmt in program.statements {
-        if stmt.statement_type
-            != StatementType::ReturnStatement(Expression::Identifier(Identifier::new(
-                Token::new(TokenType::IDENT, "".to_string()),
-                "".to_string(),
-            )))
-        {
-            println!("stmt not ReturnStatement. got={:?}", stmt.statement_type);
-            assert!(false);
-        }
-
-        if stmt.token.literal != "return" {
-            println!("stmt.TokenLiteral not 'return', got={}", stmt.token.literal);
-            assert!(false);
+        let stmt = &*stmt;
+        if let Some(return_stmt) = stmt.as_any().downcast_ref::<ReturnStatement>() {
+            assert_eq!(return_stmt.token_literal(), "return");
+        } else {
+            assert!(false, "stmt not ReturnStatement. got={:?}", stmt);
         }
     }
 }
 
-fn test_let_statement(s: Statement, name: &str) -> bool {
-    if s.token.literal != "let" {
-        println!("s.TokenLiteral not 'let'. got={}", s.token.literal);
+fn test_let_statement(s: &LetStatement, name: &str) -> bool {
+    if s.token_literal() != "let" {
+        println!("s.TokenLiteral not 'let'. got={}", s.token_literal());
         return false;
     }
-
-    match s.statement_type {
-        StatementType::LetStatement(ref let_name, _) => {
-            if let_name.value != name {
-                println!("let_stmt.Name.Value not '{}'. got={}", name, let_name.value);
-                return false;
-            }
-
-            if let_name.token.literal != name {
-                println!("s.Name not '{}'. got={}", name, let_name.token.literal);
-                return false;
-            }
-        }
-        _ => {
-            println!("s not LetStatement. got={:?}", s.statement_type);
-            return false;
-        }
+    if s.name.value != name {
+        println!("let_stmt.Name.Value not '{}'. got={}", name, s.name.value);
+        return false;
     }
-
+    if s.name.token_literal() != name {
+        println!("s.Name not '{}'. got={}", name, s.name.token_literal());
+        return false;
+    }
     true
 }
 

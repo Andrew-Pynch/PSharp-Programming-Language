@@ -1,5 +1,5 @@
 use crate::{
-    ast::{self, Expression, Identifier, Program, Statement, StatementType},
+    ast::{self, Expression, Identifier, LetStatement, Program, ReturnStatement, Statement},
     lexer::Lexer,
     token::{Token, TokenType},
 };
@@ -13,15 +13,34 @@ pub struct Parser {
 }
 
 impl Parser {
-    pub fn new(_l: &Lexer) -> Parser {
-        let mut p: Parser = Parser {
-            l: _l.clone(),
+    pub fn new(l: Lexer) -> Parser {
+        let mut p = Parser {
+            l: l.clone(),
 
             cur_token: Token::new(TokenType::UNINITIALIZED, "".to_string()),
             peek_token: Token::new(TokenType::UNINITIALIZED, "".to_string()),
             errors: Vec::new(),
         };
+
+        p.next_token();
+        p.next_token();
+
         return p;
+    }
+
+    pub fn parse_program(&mut self) -> Program {
+        let mut program: Program = Program {
+            statements: Vec::new(),
+        };
+
+        while !self.cur_token_is(TokenType::EOF) {
+            let mut stmt: Option<Box<Vec<dyn Statement>>> = self.parse_statement();
+            if let Some(s) = stmt {
+                program.statements.append(&mut *s);
+            }
+            self.next_token();
+        }
+        return program;
     }
 
     pub fn next_token(&mut self) {
@@ -29,36 +48,45 @@ impl Parser {
         self.peek_token = self.l.next_token();
     }
 
-    pub fn parse_program(&mut self) -> Program {
-        let mut program: Program = Program::new();
-
-        while self.cur_token.token_type != TokenType::EOF {
-            match self.parse_statement() {
-                Some(stmt) => program.statements.push(stmt),
-                None => {}
-            }
-            self.next_token()
-        }
-
-        return program;
+    pub fn cur_token_is(&mut self, token_type: TokenType) -> bool {
+        return self.cur_token.token_type == token_type;
     }
 
-    pub fn parse_statement(&mut self) -> Option<Statement> {
-        match self.cur_token.token_type {
-            TokenType::LET => self.parse_let_statement(),
-            TokenType::RETURN => self.parse_return_statement(),
-            _ => None,
+    pub fn peek_token_is(&mut self, token_type: TokenType) -> bool {
+        return self.peek_token.token_type == token_type;
+    }
+
+    pub fn peek_error(&mut self, token_type: TokenType) {
+        let msg = format!(
+            "expected next token to be {:?}, got {:?} instead",
+            token_type, self.peek_token.token_type
+        );
+        self.errors.push(msg);
+    }
+
+    pub fn expect_peek(&mut self, token_type: TokenType) -> bool {
+        if self.peek_token_is(token_type) {
+            self.next_token();
+            return true;
+        } else {
+            self.peek_error(token_type);
+            return false;
         }
     }
 
-    pub fn parse_let_statement(&mut self) -> Option<Statement> {
+    // ...existing functions...
+
+    pub fn parse_let_statement(&mut self) -> Option<Box<dyn Statement>> {
         let token = self.cur_token.clone();
 
         if !self.expect_peek(TokenType::IDENT) {
             return None;
         }
 
-        let name = Identifier::new(self.cur_token.clone(), self.cur_token.literal.clone());
+        let name = Identifier {
+            token: self.cur_token.clone(),
+            value: self.cur_token.literal.clone(),
+        };
 
         if !self.expect_peek(TokenType::ASSIGN) {
             return None;
@@ -68,64 +96,31 @@ impl Parser {
 
         // statement.value = self.parse_expression(Precedence::LOWEST);
 
-        if self.current_token_is(TokenType::SEMICOLON) {
+        if self.cur_token_is(TokenType::SEMICOLON) {
             self.next_token();
         };
 
-        return Some(Statement {
+        Some(Box::new(LetStatement {
             token,
-            statement_type: StatementType::LetStatement(
-                name,
-                Expression::Identifier(Identifier::new(
-                    Token::new(TokenType::IDENT, "".to_string()),
-                    "".to_string(),
-                )),
-            ),
-        });
+            name,        // no need to box here
+            value: None, // should be `Option<Box<dyn Expression>>`
+        }))
     }
 
-    pub fn parse_return_statement(&mut self) -> Option<Statement> {
+    pub fn parse_return_statement(&mut self) -> Option<Box<dyn Statement>> {
         let token = self.cur_token.clone();
 
         self.next_token();
 
-        // statement.value = self.parse_expression(Precedence::LOWEST);
+        // statement.return_value = self.parse_expression(Precedence::LOWEST);
 
-        if self.current_token_is(TokenType::SEMICOLON) {
+        if self.cur_token_is(TokenType::SEMICOLON) {
             self.next_token();
         };
 
-        return Some(Statement {
+        Some(Box::new(ReturnStatement {
             token,
-            statement_type: StatementType::ReturnStatement(Expression::Identifier(
-                Identifier::new(Token::new(TokenType::IDENT, "".to_string()), "".to_string()),
-            )),
-        });
-    }
-
-    pub fn current_token_is(&mut self, tok: TokenType) -> bool {
-        return self.cur_token.token_type == tok;
-    }
-
-    pub fn peek_token_is(&mut self, tok: TokenType) -> bool {
-        return self.peek_token.token_type == tok;
-    }
-
-    pub fn expect_peek(&mut self, tok: TokenType) -> bool {
-        if self.peek_token_is(tok) {
-            self.next_token();
-            return true;
-        } else {
-            self.peek_error(tok);
-            return false;
-        }
-    }
-
-    pub fn peek_error(&mut self, tok: TokenType) {
-        let msg = format!(
-            "expected next token to be {:?}, got {:?} instead",
-            tok, self.peek_token.token_type
-        );
-        self.errors.push(msg);
+            return_value: None, // should be `Option<Box<dyn Expression>>`
+        }))
     }
 }
